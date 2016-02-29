@@ -1,4 +1,5 @@
 #include "MyPrimitive.h"
+#include <math.h>
 MyPrimitive::MyPrimitive() { }
 MyPrimitive::MyPrimitive(const MyPrimitive& other) { }
 MyPrimitive& MyPrimitive::operator=(const MyPrimitive& other) { return *this; }
@@ -30,6 +31,7 @@ void MyPrimitive::AddQuad(vector3 a_vBottomLeft, vector3 a_vBottomRight, vector3
 	AddVertexPosition(a_vBottomRight);
 	AddVertexPosition(a_vTopRight);
 }
+
 void MyPrimitive::GeneratePlane(float a_fSize, vector3 a_v3Color)
 {
 	if (a_fSize < 0.01f)
@@ -110,16 +112,42 @@ void MyPrimitive::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivis
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	float iterate = 360 / a_nSubdivisions; //what to iterate angle by
+	iterate *= (PI / 180); //convert to radians
+	float angle = 0 * (PI / 180); //start angle in radians
+	float angle2 = angle; //end angle
+	vector3 point0(0, a_fHeight/2, 0); //tip of cone
+	vector3 point1(0, -a_fHeight / 2, 0); //centerpoint of base
+	vector3 point2; //base point 1
+	vector3 point3; //base point 2
+	for (int i = 0; i < a_nSubdivisions; i++) {
 
-	AddQuad(point0, point1, point3, point2);
+		//Find value of opposite and adjacent sides with angle 1
+		float opposite = sin(angle) * a_fRadius;
+		float adjacent = cos(angle) * a_fRadius;
+
+		//Make angle 2 bigger and find o and a of angle 2
+		angle2 += iterate;
+		float opposite2 = sin(angle2) * a_fRadius;
+		float adjacent2 = cos(angle2) * a_fRadius;
+		
+		//Point 2 is with angle one and point 3 is with angle two
+		point2 = vector3(opposite, -a_fHeight / 2, adjacent);
+		point3 = vector3(opposite2, -a_fHeight / 2, adjacent2);
+
+		//Create triangle from tip to base points
+		AddVertexPosition(point0);
+		AddVertexPosition(point2);
+		AddVertexPosition(point3);
+
+		//Create triangle from centerpoint to base points
+		AddVertexPosition(point2);
+		AddVertexPosition(point1);
+		AddVertexPosition(point3);
+
+		//Iterate angle 1
+		angle += iterate;
+	}
 
 	//Your code ends here
 	CompileObject(a_v3Color);
@@ -135,16 +163,51 @@ void MyPrimitive::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubd
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	float iterate = 360 / a_nSubdivisions; //what to iterate angle by
+	iterate *= (PI / 180); //convert to radians
+	float angle = 0 * (PI / 180); //start angle in radians
+	float angle2 = angle; //end angle
+	vector3 point0(0, a_fHeight / 2, 0); //centerpoint of top
+	vector3 point1(0, -a_fHeight / 2, 0); //centerpoint of bottom
+	vector3 point2; //bottom base point 1
+	vector3 point3; //bottom base point 2
+	vector3 point4; //top base point 1
+	vector3 point5; //top base point 2
+	for (int i = 0; i < a_nSubdivisions; i++) {
 
-	AddQuad(point0, point1, point3, point2);
+		//Find value of opposite and adjacent sides with angle 1
+		float opposite = sin(angle) * a_fRadius;
+		float adjacent = cos(angle) * a_fRadius;
+
+		//Make angle 2 bigger and find o and a of angle 2
+		angle2 += iterate;
+		float opposite2 = sin(angle2) * a_fRadius;
+		float adjacent2 = cos(angle2) * a_fRadius;
+
+		//Point 2 is with angle one and point 3 is with angle two
+		point2 = vector3(opposite, -a_fHeight / 2, adjacent);
+		point3 = vector3(opposite2, -a_fHeight / 2, adjacent2);
+
+		//Point 4 is with angle one and point 5 is with angle two
+		point4 = vector3(opposite, a_fHeight / 2, adjacent);
+		point5 = vector3(opposite2, a_fHeight / 2, adjacent2);
+
+		//Create triangle from tip to base points
+		AddVertexPosition(point0);
+		AddVertexPosition(point4);
+		AddVertexPosition(point5);
+
+		//Create triangle from centerpoint to base points
+		AddVertexPosition(point2);
+		AddVertexPosition(point1);
+		AddVertexPosition(point3);
+
+		//Create Side
+		AddQuad(point2, point3, point4, point5);
+
+		//Iterate angle 1
+		angle += iterate;
+	}
 
 	//Your code ends here
 	CompileObject(a_v3Color);
@@ -160,16 +223,68 @@ void MyPrimitive::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	float iterate = 360 / a_nSubdivisions; //what to iterate angle by
+	iterate *= (PI / 180); //convert to radians
+	float angle = 0 * (PI / 180); //start angle in radians
+	float angle2 = angle; //end angle
+	vector3 point0(0, a_fHeight / 2, 0); //centerpoint of top
+	vector3 point1(0, -a_fHeight / 2, 0); //centerpoint of bottom
+	vector3 point2; //bottom base point 1
+	vector3 point3; //bottom base point 2
+	vector3 point4; //top base point 1
+	vector3 point5; //top base point 2
+	vector3 point6; //bottom base inner point 1
+	vector3 point7; //bottom base inner point 2
+	vector3 point8; //top base inner point 1
+	vector3 point9; //top base inner point 2
+	for (int i = 0; i < a_nSubdivisions; i++) {
 
-	AddQuad(point0, point1, point3, point2);
+		//Find value of opposite and adjacent sides with angle 1 for outside circle
+		float opposite = sin(angle) * a_fOuterRadius;
+		float adjacent = cos(angle) * a_fOuterRadius;
+
+		//Find value of opposite and adjacent sides with angle 1 for inside circle
+		float opposite3 = sin(angle) * a_fInnerRadius;
+		float adjacent3 = cos(angle) * a_fInnerRadius;
+
+		//Make angle 2 bigger and find o and a of angle 2 for outside and inside circle
+		angle2 += iterate;
+		float opposite2 = sin(angle2) * a_fOuterRadius;
+		float adjacent2 = cos(angle2) * a_fOuterRadius;
+		float opposite4 = sin(angle2) * a_fInnerRadius;
+		float adjacent4 = cos(angle2) * a_fInnerRadius;
+
+		//Point 2 is with angle one and point 3 is with angle two
+		point2 = vector3(opposite, -a_fHeight / 2, adjacent);
+		point3 = vector3(opposite2, -a_fHeight / 2, adjacent2);
+
+		//Point 4 is with angle one and point 5 is with angle two
+		point4 = vector3(opposite, a_fHeight / 2, adjacent);
+		point5 = vector3(opposite2, a_fHeight / 2, adjacent2);
+
+		//Point 6 is with angle one and point 7 is with angle two
+		point6 = vector3(opposite3, -a_fHeight / 2, adjacent3);
+		point7 = vector3(opposite4, -a_fHeight / 2, adjacent4);
+
+		//Point 8 is with angle one and point 9 is with angle two
+		point8 = vector3(opposite3, a_fHeight / 2, adjacent3);
+		point9 = vector3(opposite4, a_fHeight / 2, adjacent4);
+
+		//Create Outside
+		AddQuad(point2, point3, point4, point5);
+
+		//Create Inside
+		AddQuad(point7, point6, point9, point8);
+
+		//Create Top
+		AddQuad(point4, point5, point8, point9);
+
+		//Create Bottom
+		AddQuad(point6, point7, point2, point3);
+
+		//Iterate angle 1
+		angle += iterate;
+	}
 
 	//Your code ends here
 	CompileObject(a_v3Color);
@@ -222,16 +337,9 @@ void MyPrimitive::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	vector3 point0(0, a_fRadius, 0); //Center top
+	vector3 point1(0, -a_fRadius, 0); //Center bottom
 
-	AddQuad(point0, point1, point3, point2);
 
 	//Your code ends here
 	CompileObject(a_v3Color);
