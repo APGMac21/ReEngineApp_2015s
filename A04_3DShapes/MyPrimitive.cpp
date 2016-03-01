@@ -337,8 +337,44 @@ void MyPrimitive::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a
 	Init();
 
 	//Your code starts here
-	vector3 point0(0, a_fRadius, 0); //Center top
-	vector3 point1(0, -a_fRadius, 0); //Center bottom
+	float iterate = 360 / a_nSubdivisions; //what to iterate angle by
+	iterate *= (PI / 180); //convert to radians
+	float angle = 0 * (PI / 180); //start angle in radians
+	float angle2 = angle; //end angle
+	float radStep = a_fRadius * 2 / a_nSubdivisions;
+	float rad = radStep;
+	float downStep;
+	vector3 point0(0, a_fRadius, 0); //centerpoint of top
+	vector3 point1(0, -a_fRadius, 0); //centerpoint of bottom
+	vector3 point2; //bottom base point 1
+	vector3 point3; //bottom base point 2
+	vector3 point4; //top base point 1
+	vector3 point5; //top base point 2
+	vector3 point6; //bottom base inner point 1
+	vector3 point7; //bottom base inner point 2
+	vector3 point8; //top base inner point 1
+	vector3 point9; //top base inner point 2
+	for (int i = 0; i < a_nSubdivisions; i++) {
+
+		for (int j = 0; j < a_nSubdivisions; i++) {
+
+			//Find value of opposite and adjacent sides with angle 1 for outside circle
+			float opposite = sin(angle) * rad;
+			float adjacent = cos(angle) * rad;
+
+			//Make angle 2 bigger and find o and a of angle 2 for outside and inside circle
+			angle2 += iterate;
+			float opposite2 = sin(angle2) * rad;
+			float adjacent2 = cos(angle2) * rad;
+
+			//Point 2 is with angle one and point 3 is with angle two
+			point2 = vector3(opposite, a_fRadius, adjacent);
+			point3 = vector3(opposite2, a_fRadius, adjacent2);
+
+			//Iterate angle 1
+			angle += iterate;
+		}
+	}
 
 
 	//Your code ends here
