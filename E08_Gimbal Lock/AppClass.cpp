@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("Bobadilla, Alberto - Gimbal Lock");
+	super::InitWindow("McClellan, Gregory - Gimbal Lock");
 	m_v4ClearColor = vector4(0.0f, 0.0f, 0.0f, 0.0f);
 }
 void AppClass::InitVariables(void)
