@@ -18,6 +18,8 @@ public:
 
 	matrix4 m_mToWorld;
 
+	glm::quat qOrientation;
+
 	vector3 m_v3Orientation;
 
 	/* Constructor */
