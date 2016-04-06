@@ -27,12 +27,8 @@ void AppClass::ProcessKeyboard(void)
 	//F2 Controllers
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
 	{
-<<<<<<< HEAD
 		m_m4Projection = glm::perspective(45.0f, 1080.0f / 768.0f, 0.01f, 1000.0f);
 		m_m4View = glm::lookAt(glm::vec3(15.0f, 0.0f, 0.0f), glm::vec3(14.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-=======
-		m_fTemp += 0.1f;
->>>>>>> lab/master
 	}
 
 	//F3 Controllers
