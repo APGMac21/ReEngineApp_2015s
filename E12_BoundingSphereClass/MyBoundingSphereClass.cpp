@@ -91,20 +91,5 @@ bool MyBoundingSphereClass::IsColliding(MyBoundingSphereClass* const a_pOther)
 	
 	bool bAreColliding = false;
 	return (glm::distance(v3Temp, v3Temp1) < m_fRadius + a_pOther->m_fRadius);
-
-	/*
-	m_m4Steve = m_pMeshMngr->GetModelMatrix("Steve") * glm::translate(m_v3Center1);
-	if (bAreColliding)
-		m_pMeshMngr->AddSphereToQueue(m_m4Steve * glm::scale(vector3(m_fRadius1 * 2.0f)), RERED, WIRE);
-	else
-		m_pMeshMngr->AddSphereToQueue(m_m4Steve * glm::scale(vector3(m_fRadius1 * 2.0f)), REGREEN, WIRE);
-
-	m_m4Creeper = m_pMeshMngr->GetModelMatrix("Creeper") * glm::translate(m_v3Center2);
-	if (bAreColliding)
-		m_pMeshMngr->AddSphereToQueue(m_m4Creeper * glm::scale(vector3(m_fRadius2 * 2.0f)), RERED, WIRE);
-	else
-		m_pMeshMngr->AddSphereToQueue(m_m4Creeper * glm::scale(vector3(m_fRadius2 * 2.0f)), REGREEN, WIRE);
-
-		retuurn false; */
 }
 matrix4 MyBoundingSphereClass::GetModelMatrix(void) { return m_m4ToWorld; }
