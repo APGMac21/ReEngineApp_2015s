@@ -42,9 +42,10 @@ void AppClass::Update(void)
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O1) * ToMatrix4(m_qArcBall), "Steve");
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O2), "Creeper");
 
-	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
-	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
+	m_pSphere1->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"));
+	m_pSphere2->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Creeper"));
 
+<<<<<<< HEAD
 	m_pSphere1->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"));
 	m_pSphere2->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Creeper"));
 
@@ -54,18 +55,46 @@ void AppClass::Update(void)
 	m_pMeshMngr->AddSphereToQueue(
 		glm::translate(vector3(m_pSphere2->GetCenter())) * 
 		glm::scale(vector3(m_pSphere2->GetRadius()) * 2.0f), RERED, WIRE);
+=======
+	bool isColliding = m_pSphere1->IsColliding(m_pSphere2);
+>>>>>>> lab/master
 
+	if (isColliding)
+	{
+		m_pMeshMngr->AddSphereToQueue(
+			glm::translate(vector3(m_pSphere1->GetCenterG())) *
+			glm::scale(vector3(m_pSphere1->GetRadius()) * 2.0f), RERED, WIRE);
+		m_pMeshMngr->AddSphereToQueue(glm::translate(vector3(m_pSphere2->GetCenterG()))  *
+			glm::scale(vector3(m_pSphere2->GetRadius()) * 2.0f), RERED, WIRE);
+	}
+	else
+	{
+		m_pMeshMngr->AddSphereToQueue(
+			glm::translate(vector3(m_pSphere1->GetCenterG())) *
+			glm::scale(vector3(m_pSphere1->GetRadius()) * 2.0f), REGREEN, WIRE);
+		m_pMeshMngr->AddSphereToQueue(glm::translate(vector3(m_pSphere2->GetCenterG()))  *
+			glm::scale(vector3(m_pSphere2->GetRadius()) * 2.0f), REGREEN, WIRE);
+	}
+	
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddInstanceToRenderList("ALL");
 
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> lab/master
 	//print info into the console
 	printf("FPS: %d            \r", nFPS);//print the Frames per Second
 
 	//Print info on the screen
 	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), REYELLOW);
+<<<<<<< HEAD
+=======
+
+>>>>>>> lab/master
 	m_pMeshMngr->Print("FPS:");
 	m_pMeshMngr->Print(std::to_string(nFPS), RERED);
 }
@@ -91,7 +120,11 @@ void AppClass::Display(void)
 		m_pMeshMngr->AddGridToQueue(1.0f, REAXIS::XY, REBLUE * 0.75f); //renders the XY grid with a 100% scale
 		break;
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> lab/master
 	m_pMeshMngr->Render(); //renders the render list
 
 	m_pGLSystem->GLSwapBuffers(); //Swaps the OpenGL buffers
