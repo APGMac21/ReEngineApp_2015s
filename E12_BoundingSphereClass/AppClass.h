@@ -18,10 +18,7 @@ class AppClass : public ReEngAppClass
 
 	vector3 m_v3O1 = vector3(-2.5f, 0.0f, 0.0f);
 	vector3 m_v3O2 = vector3( 2.5f, 0.0f, 0.0f);
-<<<<<<< HEAD
-=======
 
->>>>>>> lab/master
 public:
 	typedef ReEngAppClass super;
 	/*
