@@ -20,8 +20,8 @@ void AppClass::InitVariables(void)
 	m_pMeshMngr->LoadModel("Minecraft\\Creeper.obj", "Creeper");
 	
 
-	m_pSphere1 = new MyBoundingSphereClass(m_pMeshMngr->GetVertexList("Steve"));
-	m_pSphere2 = new MyBoundingSphereClass(m_pMeshMngr->GetVertexList("Creeper"));
+	m_pBox1 = new MyBoundingCubeClass(m_pMeshMngr->GetVertexList("Steve"));
+	m_pBox2 = new MyBoundingCubeClass(m_pMeshMngr->GetVertexList("Creeper"));
 }
 
 void AppClass::Update(void)
@@ -42,9 +42,10 @@ void AppClass::Update(void)
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O1) * ToMatrix4(m_qArcBall), "Steve");
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O2), "Creeper");
 
-	m_pSphere1->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"));
-	m_pSphere2->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Creeper"));
+	m_pBox1->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"));
+	m_pBox2->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Creeper"));
 
+<<<<<<< HEAD
 	m_pMeshMngr->AddSphereToQueue(
 		glm::translate(vector3(m_pSphere1->GetCenterG())) *
 		glm::scale(vector3(m_pSphere1->GetRadius()) * 2.0f), RERED, WIRE);
@@ -54,22 +55,25 @@ void AppClass::Update(void)
 
 
 	bool isColliding = m_pSphere1->IsColliding(m_pSphere2);
+=======
+	bool isColliding = m_pBox1->IsColliding(m_pBox2);
+>>>>>>> lab/master
 
 	if (isColliding)
 	{
-		m_pMeshMngr->AddSphereToQueue(
-			glm::translate(vector3(m_pSphere1->GetCenterG())) *
-			glm::scale(vector3(m_pSphere1->GetRadius()) * 2.0f), RERED, WIRE);
-		m_pMeshMngr->AddSphereToQueue(glm::translate(vector3(m_pSphere2->GetCenterG()))  *
-			glm::scale(vector3(m_pSphere2->GetRadius()) * 2.0f), RERED, WIRE);
+		m_pMeshMngr->AddCubeToQueue(
+			glm::translate(vector3(m_pBox1->GetCenterG())) *
+			glm::scale(vector3(m_pBox1->GetSize())), RERED, SOLID);
+		m_pMeshMngr->AddCubeToQueue(glm::translate(vector3(m_pBox2->GetCenterG()))  *
+			glm::scale(vector3(m_pBox2->GetSize())), RERED, SOLID);
 	}
 	else
 	{
-		m_pMeshMngr->AddSphereToQueue(
-			glm::translate(vector3(m_pSphere1->GetCenterG())) *
-			glm::scale(vector3(m_pSphere1->GetRadius()) * 2.0f), REGREEN, WIRE);
-		m_pMeshMngr->AddSphereToQueue(glm::translate(vector3(m_pSphere2->GetCenterG()))  *
-			glm::scale(vector3(m_pSphere2->GetRadius()) * 2.0f), REGREEN, WIRE);
+		m_pMeshMngr->AddCubeToQueue(
+			glm::translate(vector3(m_pBox1->GetCenterG())) *
+			glm::scale(vector3(m_pBox1->GetSize())), REGREEN, WIRE);
+		m_pMeshMngr->AddCubeToQueue(glm::translate(vector3(m_pBox2->GetCenterG()))  *
+			glm::scale(vector3(m_pBox2->GetSize())), REGREEN, WIRE);
 	}
 	
 	//Adds all loaded instance to the render list
@@ -116,15 +120,27 @@ void AppClass::Display(void)
 
 void AppClass::Release(void)
 {
-	if (m_pSphere1 != nullptr)
+	if (m_pBox1 != nullptr)
 	{
+<<<<<<< HEAD
 		delete m_pSphere1;
 		m_pSphere1 = nullptr;
+=======
+		delete m_pBox1;
+		m_pBox1 = nullptr;
+
+>>>>>>> lab/master
 	}
-	if (m_pSphere2 != nullptr)
+	if (m_pBox2 != nullptr)
 	{
+<<<<<<< HEAD
 		delete m_pSphere2;
 		m_pSphere2 = nullptr;
+=======
+		delete m_pBox2;
+		m_pBox2 = nullptr;
+
+>>>>>>> lab/master
 	}
 	super::Release(); //release the memory of the inherited fields
 }
