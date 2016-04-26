@@ -18,12 +18,15 @@ void AppClass::InitVariables(void)
 	//Load Models
 	m_pMeshMngr->LoadModel("Minecraft\\Steve.obj", "Steve");
 	m_pMeshMngr->LoadModel("Minecraft\\Creeper.obj", "Creeper");
+<<<<<<< HEAD
 	
 	m_pBox1 = new MyBoundingCubeClass(m_pMeshMngr->GetVertexList("Steve"));
 	m_pBox2 = new MyBoundingCubeClass(m_pMeshMngr->GetVertexList("Creeper"));
 
 	m_pRealignedBox1 = new AxisRealignedBoundingBox(m_pMeshMngr->GetVertexList("Steve"));
 	m_pRealignedBox2 = new AxisRealignedBoundingBox(m_pMeshMngr->GetVertexList("Creeper"));
+=======
+>>>>>>> lab/master
 }
 
 void AppClass::Update(void)
@@ -44,6 +47,7 @@ void AppClass::Update(void)
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O1) * ToMatrix4(m_qArcBall), "Steve");
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O2), "Creeper");
 
+<<<<<<< HEAD
 	m_pBox1->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"));
 	m_pRealignedBox1->SetModelMatrix(m_pBox1->GetModelMatrix());
 	m_pRealignedBox2->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Creeper"));
@@ -73,12 +77,17 @@ void AppClass::Update(void)
 			glm::scale(vector3(m_pRealignedBox1->GetSize())), REGREEN, WIRE);
 	}
 	
+=======
+>>>>>>> lab/master
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddInstanceToRenderList("ALL");
 
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
+<<<<<<< HEAD
 
+=======
+>>>>>>> lab/master
 	//print info into the console
 	printf("FPS: %d            \r", nFPS);//print the Frames per Second
 
@@ -92,8 +101,8 @@ void AppClass::Display(void)
 {
 	//clear the screen
 	ClearScreen();
-
 	//Render the grid based on the camera's mode:
+<<<<<<< HEAD
 	switch (m_pCameraMngr->GetCameraMode())
 	{
 	default: //Perspective
@@ -110,13 +119,17 @@ void AppClass::Display(void)
 		break;
 	}
 
+=======
+	m_pMeshMngr->AddGridToRenderListBasedOnCamera(m_pCameraMngr->GetCameraMode());
+>>>>>>> lab/master
 	m_pMeshMngr->Render(); //renders the render list
-
+	m_pMeshMngr->ResetRenderList(); //Reset the Render list after render
 	m_pGLSystem->GLSwapBuffers(); //Swaps the OpenGL buffers
 }
 
 void AppClass::Release(void)
 {
+<<<<<<< HEAD
 	if (m_pBox1 != nullptr)
 	{
 		delete m_pBox1;
@@ -127,5 +140,7 @@ void AppClass::Release(void)
 		delete m_pBox2;
 		m_pBox2 = nullptr;
 	}
+=======
+>>>>>>> lab/master
 	super::Release(); //release the memory of the inherited fields
 }

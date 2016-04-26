@@ -24,12 +24,15 @@
     <ClInclude Include="MyBoundingSphereClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="MyBoundingCubeClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AxisRealignedBoundingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+=======
+>>>>>>> lab/master
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\res\BTO.rc">
@@ -49,11 +52,14 @@
     <ClCompile Include="MyBoundingSphereClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="MyBoundingCubeClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AxisRealignedBoundingBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+=======
+>>>>>>> lab/master
   </ItemGroup>
 </Project>

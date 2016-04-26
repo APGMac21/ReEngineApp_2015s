@@ -107,8 +107,11 @@ xcopy "$(SolutionDir)include\RE\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Com
   <ItemGroup>
     <ClInclude Include="..\res\Resource.h" />
     <ClInclude Include="AppClass.h" />
+<<<<<<< HEAD
     <ClInclude Include="AxisRealignedBoundingBox.h" />
     <ClInclude Include="MyBoundingCubeClass.h" />
+=======
+>>>>>>> lab/master
     <ClInclude Include="MyBoundingSphereClass.h" />
   </ItemGroup>
   <ItemGroup>
@@ -119,7 +122,6 @@ xcopy "$(SolutionDir)include\RE\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Com
     <ClCompile Include="AppClassControls.cpp" />
     <ClCompile Include="AxisRealignedBoundingBox.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MyBoundingCubeClass.cpp" />
     <ClCompile Include="MyBoundingSphereClass.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

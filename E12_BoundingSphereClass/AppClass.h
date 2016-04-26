@@ -8,22 +8,27 @@ Date: 2015/09
 #include "RE\ReEngAppClass.h"
 #include <SFML\Graphics.hpp>
 #include "MyBoundingSphereClass.h"
+<<<<<<< HEAD
 #include "MyBoundingCubeClass.h"
 #include "AxisRealignedBoundingBox.h"
+=======
+>>>>>>> lab/master
 
 using namespace ReEng; //Using ReEng namespace to use all the classes in the dll
 
 class AppClass : public ReEngAppClass
 {
+<<<<<<< HEAD
 	MyBoundingCubeClass* m_pBox1 = nullptr;
 	MyBoundingCubeClass* m_pBox2 = nullptr;
 
 	AxisRealignedBoundingBox* m_pRealignedBox1 = nullptr;
 	AxisRealignedBoundingBox* m_pRealignedBox2 = nullptr;
 
+=======
+>>>>>>> lab/master
 	vector3 m_v3O1 = vector3(-2.5f, 0.0f, 0.0f);
 	vector3 m_v3O2 = vector3( 2.5f, 0.0f, 0.0f);
-
 public:
 	typedef ReEngAppClass super;
 	/*
