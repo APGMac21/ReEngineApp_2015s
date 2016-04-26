@@ -7,19 +7,95 @@ Date: 2015/09
 
 #include "RE\ReEngAppClass.h"
 #include <SFML\Graphics.hpp>
-#include "MyBoundingSphereClass.h"
-#include "MyBoundingCubeClass.h"
-#include "AxisRealignedBoundingBox.h"
+#include "MyBoundingObject.h"
+#include <vector>
 
 using namespace ReEng; //Using ReEng namespace to use all the classes in the dll
 
+
+class BoundingObjectManager
+{
+	std::vector<MyBoundingObject*> objectVector;
+
+public:
+	//Instance is used for singleton
+	static BoundingObjectManager* instance;
+	//Orientation quaternion
+
+	static BoundingObjectManager* GetInstance()
+	{
+		if (instance == nullptr)
+		{
+			instance = new BoundingObjectManager();
+		}
+		return instance;
+	};
+	static void ReleaseInstance()
+	{
+		if (instance != nullptr)
+		{
+			for (int i = 0; i < instance->objectVector.size(); i++) {
+				delete instance->objectVector[i];
+			}
+			delete instance;
+			instance = nullptr;
+		}
+	}
+
+	void AddBO(std::vector<vector3> a_lVectorList)
+	{
+		MyBoundingObject* bo = new MyBoundingObject(a_lVectorList);
+		objectVector.push_back(bo);
+	}
+
+	int GetBONum() { return objectVector.size(); }
+
+	void RenderBO(int index, MeshManagerSingleton* m_pMeshManager) {
+		objectVector[index]->DrawBO(m_pMeshManager);
+	}
+
+	void RenderAllBO(MeshManagerSingleton* m_pMeshManager) {
+		for (int i = 0; i < objectVector.size(); i++) {
+			RenderBO(i, m_pMeshManager);
+		}
+	}
+
+	void CheckCollisions() {
+		for (int i = 0; i < objectVector.size(); i++) {
+			for (int j = 0; j < objectVector.size(); j++) {
+				if (i != j) {
+					if (objectVector[i]->IsCollidingSphere(objectVector[j])) {
+						objectVector[i]->SetColorSphere(RERED);
+						objectVector[j]->SetColorSphere(RERED);
+						if (objectVector[i]->IsCollidingCube(objectVector[j])) {
+							objectVector[i]->SetColorCube(RERED);
+							objectVector[j]->SetColorCube(RERED);
+						}
+						else
+						{
+							objectVector[i]->SetColorCube(REBLUE);
+							objectVector[j]->SetColorCube(REBLUE);
+						}
+					}
+					else
+					{
+						objectVector[i]->SetColorSphere(REGREEN);
+						objectVector[j]->SetColorSphere(REGREEN);
+					}
+				}
+			}
+		}
+	}
+
+	void SetModelMatrix(matrix4 modelMatrix, int index) {
+		objectVector[index]->SetModelMatrix(modelMatrix);
+	}
+
+};
+
 class AppClass : public ReEngAppClass
 {
-	MyBoundingCubeClass* m_pBox1 = nullptr;
-	MyBoundingCubeClass* m_pBox2 = nullptr;
-
-	AxisRealignedBoundingBox* m_pRealignedBox1 = nullptr;
-	AxisRealignedBoundingBox* m_pRealignedBox2 = nullptr;
+	BoundingObjectManager* boundingObject;
 
 	vector3 m_v3O1 = vector3(-2.5f, 0.0f, 0.0f);
 	vector3 m_v3O2 = vector3( 2.5f, 0.0f, 0.0f);

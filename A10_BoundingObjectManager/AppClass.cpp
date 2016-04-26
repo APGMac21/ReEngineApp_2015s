@@ -1,7 +1,10 @@
 #include "AppClass.h"
+
+BoundingObjectManager* BoundingObjectManager::instance = nullptr;
+
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("A10 Bounding Object Manager"); // Window Name
+	super::InitWindow("MyBoundingSphereClass example"); // Window Name
 
 	// Set the clear color based on Microsoft's CornflowerBlue (default in XNA)
 	//if this line is in Init Application it will depend on the .cfg file, if it
@@ -11,6 +14,8 @@ void AppClass::InitWindow(String a_sWindowName)
 
 void AppClass::InitVariables(void)
 {
+	boundingObject = BoundingObjectManager::GetInstance();
+
 	//Initialize positions
 	m_v3O1 = vector3(-2.5f, 0.0f, 0.0f);
 	m_v3O2 = vector3(2.5f, 0.0f, 0.0f);
@@ -18,12 +23,9 @@ void AppClass::InitVariables(void)
 	//Load Models
 	m_pMeshMngr->LoadModel("Minecraft\\Steve.obj", "Steve");
 	m_pMeshMngr->LoadModel("Minecraft\\Creeper.obj", "Creeper");
-	
-	m_pBox1 = new MyBoundingCubeClass(m_pMeshMngr->GetVertexList("Steve"));
-	m_pBox2 = new MyBoundingCubeClass(m_pMeshMngr->GetVertexList("Creeper"));
 
-	m_pRealignedBox1 = new AxisRealignedBoundingBox(m_pMeshMngr->GetVertexList("Steve"));
-	m_pRealignedBox2 = new AxisRealignedBoundingBox(m_pMeshMngr->GetVertexList("Creeper"));
+	boundingObject->AddBO(m_pMeshMngr->GetVertexList("Steve"));
+	boundingObject->AddBO(m_pMeshMngr->GetVertexList("Creeper"));
 }
 
 void AppClass::Update(void)
@@ -44,34 +46,12 @@ void AppClass::Update(void)
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O1) * ToMatrix4(m_qArcBall), "Steve");
 	m_pMeshMngr->SetModelMatrix(glm::translate(m_v3O2), "Creeper");
 
-	m_pBox1->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"));
-	m_pRealignedBox1->SetModelMatrix(m_pBox1->GetModelMatrix());
-	m_pRealignedBox2->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Creeper"));
+	boundingObject->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"), 0);
+	boundingObject->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Creeper"), 1);
 
-	bool isColliding = m_pRealignedBox1->IsColliding(m_pRealignedBox2);
+	boundingObject->CheckCollisions();
 
-	if (isColliding)
-	{
-		m_pMeshMngr->AddCubeToQueue(
-			glm::translate(vector3(m_pBox1->GetCenterG())) *
-			ToMatrix4(m_qArcBall) *
-			glm::scale(vector3(m_pBox1->GetSize())), RERED, SOLID);
-		m_pMeshMngr->AddCubeToQueue(glm::translate(vector3(m_pRealignedBox2->GetCenterG()))  *
-			glm::scale(vector3(m_pRealignedBox2->GetSize())), RERED, WIRE);
-		m_pMeshMngr->AddCubeToQueue(glm::translate(vector3(m_pRealignedBox1->GetCenterG()))  *
-			glm::scale(vector3(m_pRealignedBox1->GetSize())), RERED, WIRE);
-	}
-	else
-	{
-		m_pMeshMngr->AddCubeToQueue(
-			glm::translate(vector3(m_pBox1->GetCenterG())) *
-			ToMatrix4(m_qArcBall) *
-			glm::scale(vector3(m_pBox1->GetSize())), REGREEN, WIRE);
-		m_pMeshMngr->AddCubeToQueue(glm::translate(vector3(m_pRealignedBox2->GetCenterG()))  *
-			glm::scale(vector3(m_pRealignedBox2->GetSize())), REGREEN, WIRE);
-		m_pMeshMngr->AddCubeToQueue(glm::translate(vector3(m_pRealignedBox1->GetCenterG()))  *
-			glm::scale(vector3(m_pRealignedBox1->GetSize())), REGREEN, WIRE);
-	}
+	boundingObject->RenderAllBO(m_pMeshMngr);
 	
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddInstanceToRenderList("ALL");
@@ -117,15 +97,6 @@ void AppClass::Display(void)
 
 void AppClass::Release(void)
 {
-	if (m_pBox1 != nullptr)
-	{
-		delete m_pBox1;
-		m_pBox1 = nullptr;
-	}
-	if (m_pBox2 != nullptr)
-	{
-		delete m_pBox2;
-		m_pBox2 = nullptr;
-	}
+	boundingObject->ReleaseInstance();
 	super::Release(); //release the memory of the inherited fields
 }
