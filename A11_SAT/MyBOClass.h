@@ -157,6 +157,8 @@ public:
 	*/
 	void DisplayReAlligned(vector3 a_v3Color = REDEFAULT);
 
+	bool SATColliding(MyBOClass* const a_pOther);
+
 private:
 	/*
 	USAGE: Deallocates member fields

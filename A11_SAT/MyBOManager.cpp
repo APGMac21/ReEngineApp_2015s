@@ -213,7 +213,7 @@ void MyBOManager::CheckCollisions(void)
 	{
 		for (uint nObjectB = nObjectA + 1; nObjectB < m_nObjectCount; nObjectB++)
 		{
-			if (m_lObject[nObjectA]->IsColliding(m_lObject[nObjectB]))
+			if (m_lObject[nObjectA]->SATColliding(m_lObject[nObjectB]))
 			{
 				m_llCollidingIndices[nObjectA].push_back(nObjectB);
 				m_llCollidingIndices[nObjectB].push_back(nObjectA);
@@ -248,4 +248,10 @@ int MyBOManager::GetIndex(String a_sIndex)
 	if (var == m_mapIndex.end())
 		return -1;
 	return var->second;//Get the index
+}
+
+bool MyBOManager::SATColliding(MyBOClass* const obj1, MyBOClass* const obj2)
+{
+
+	return true;
 }

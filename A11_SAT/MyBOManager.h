@@ -155,6 +155,8 @@ public:
 	*/
 	void Update(void);
 
+	bool SATColliding(MyBOClass* const obj1, MyBOClass* const obj2);
+
 private:
 	/*
 	USAGE: instantiates the object

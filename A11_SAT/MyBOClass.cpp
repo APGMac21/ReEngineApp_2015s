@@ -237,3 +237,81 @@ bool MyBOClass::IsColliding(MyBOClass* const a_pOther)
 
 	return bColliding;
 }
+
+bool MyBOClass::SATColliding(MyBOClass* const a_pOther)
+{
+	// Get vectors for Shape 1 in global space
+	vector3 v3Min1 = vector3(m_m4ToWorld * vector4(m_v3Min, 1.0f));
+	vector3 v3Max1 = vector3(m_m4ToWorld * vector4(m_v3Max, 1.0f));
+
+	// vector list of 8 corners for shape 1
+	std::vector<vector3> cornerList1;
+	cornerList1.push_back(vector3(v3Max1));
+	cornerList1.push_back(vector3(v3Max1.x, v3Max1.y, v3Min1.z));
+	cornerList1.push_back(vector3(v3Max1.x, v3Min1.y, v3Max1.z));
+	cornerList1.push_back(vector3(v3Min1.x, v3Max1.y, v3Max1.z));
+
+	cornerList1.push_back(vector3(v3Min1));
+	cornerList1.push_back(vector3(v3Min1.x, v3Min1.y, v3Max1.z));
+	cornerList1.push_back(vector3(v3Min1.x, v3Max1.y, v3Min1.z));
+	cornerList1.push_back(vector3(v3Max1.x, v3Min1.y, v3Min1.z));
+
+	//----------------------------------------------------------------------------
+
+	// Get vectors for Shape 2 in global space
+	vector3 v3Min2 = vector3(a_pOther->m_m4ToWorld * vector4(a_pOther->m_v3Min, 1.0f));
+	vector3 v3Max2 = vector3(a_pOther->m_m4ToWorld * vector4(a_pOther->m_v3Max, 1.0f));
+
+	// vector list of 8 corners for shape 2
+	std::vector<vector3> cornerList2;
+
+	cornerList2.push_back(vector3(v3Max2));
+	cornerList2.push_back(vector3(v3Max2.x, v3Max2.y, v3Min2.z));
+	cornerList2.push_back(vector3(v3Max2.x, v3Min2.y, v3Max2.z));
+	cornerList2.push_back(vector3(v3Min2.x, v3Max2.y, v3Max2.z));
+
+	cornerList2.push_back(vector3(v3Min2));
+	cornerList2.push_back(vector3(v3Min2.x, v3Min2.y, v3Max2.z));
+	cornerList2.push_back(vector3(v3Min2.x, v3Max2.y, v3Min2.z));
+	cornerList2.push_back(vector3(v3Max2.x, v3Min2.y, v3Min2.z));
+
+	// Axes
+	std::vector<vector3> axesList;
+	axesList.push_back(vector3(cornerList1[0] - cornerList1[3]));		// x1
+	axesList.push_back(vector3(cornerList1[0] - cornerList1[2]));	// y1
+	axesList.push_back(vector3(cornerList1[0] - cornerList1[1]));	// z1
+
+	axesList.push_back(vector3(cornerList2[0] - cornerList2[3]));	// x2
+	axesList.push_back(vector3(cornerList2[0] - cornerList2[2]));	// y2
+	axesList.push_back(vector3(cornerList2[0] - cornerList2[1]));	// z2
+
+	axesList.push_back(glm::cross(axesList[0], axesList[4]));		// x1 x x2
+	axesList.push_back(glm::cross(axesList[0], axesList[5]));		// x1 x y2
+	axesList.push_back(glm::cross(axesList[0], axesList[6]));		// x1 x z2
+	axesList.push_back(glm::cross(axesList[1], axesList[4]));		// y1 x x2
+	axesList.push_back(glm::cross(axesList[1], axesList[5]));		// y1 x y2
+	axesList.push_back(glm::cross(axesList[1], axesList[6]));		// y1 x z2
+	axesList.push_back(glm::cross(axesList[2], axesList[4]));		// z1 x x2
+	axesList.push_back(glm::cross(axesList[2], axesList[5]));		// z1 x y2
+	axesList.push_back(glm::cross(axesList[2], axesList[6]));		// z1 x z2
+
+	//Projected centers
+	vector3 centers = a_pOther->GetCenterGlobal() - m_v3CenterG;
+
+	//Loop through list
+	for (int i = 0; i < axesList.size(); i++)
+	{
+		//Check for collision
+		if (abs(glm::dot(centers, axesList[i])) >(abs(glm::dot((m_v3HalfWidthG * axesList[0]), axesList[i])) +
+			abs(glm::dot((m_v3HalfWidthG * axesList[1]), axesList[i])) +
+			abs(glm::dot((m_v3HalfWidthG * axesList[2]), axesList[i])) +
+			abs(glm::dot((a_pOther->GetHalfWidthG() * axesList[3]), axesList[i])) +
+			abs(glm::dot((a_pOther->GetHalfWidthG() * axesList[4]), axesList[i])) +
+			abs(glm::dot((a_pOther->GetHalfWidthG() * axesList[5]), axesList[i]))))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
