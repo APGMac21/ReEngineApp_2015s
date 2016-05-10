@@ -82,60 +82,99 @@ void MyOctant::Draw(void)
 	m_pMeshMngr->AddCubeToRenderList(glm::translate(m_v3Center) * glm::scale(vector3(m_fSize)), REWHITE, WIRE);
 }
 
-void MyOctant::Subdivide(void)
+void MyOctant::Subdivide(std::vector<MyBOClass*> bOVector)
 {
-	m_uChildren = 8;
-	m_pChildren = new MyOctant[m_uChildren];
-	float newSize = this->m_fSize / 2.0f;
-	for (uint index = 0; index < m_uChildren; index++)
-	{
-		m_pChildren[index].m_fSize = newSize;
-		m_pChildren[index].m_v3Center = m_v3Center;
-		m_pChildren[index].m_bHead = false;
+	for (uint i = 0; i < bOVector.size(); i++) {
+		if (inOctant(bOVector[i])) {
+			inOctantBOVector.push_back(bOVector[i]);
+		}
 	}
 
-	newSize /= 2.0f;
+	if (inOctantBOVector.size() <= 2) {
+		return;
+	}
+	else {
+		m_uChildren = 8;
+		m_pChildren = new MyOctant[m_uChildren];
+		float newSize = this->m_fSize / 2.0f;
+		for (uint index = 0; index < m_uChildren; index++)
+		{
+			m_pChildren[index].m_fSize = newSize;
+			m_pChildren[index].m_v3Center = m_v3Center;
+			m_pChildren[index].m_bHead = false;
+		}
 
-	//For index 0 octant
-	m_pChildren[0].m_v3Center.x += newSize;
-	m_pChildren[0].m_v3Center.y += newSize;
-	m_pChildren[0].m_v3Center.z += newSize;
+		newSize /= 2.0f;
 
-	//For index 1 octant
-	m_pChildren[1].m_v3Center.x -= newSize;
-	m_pChildren[1].m_v3Center.y += newSize;
-	m_pChildren[1].m_v3Center.z += newSize;
+		//For index 0 octant
+		m_pChildren[0].m_v3Center.x += newSize;
+		m_pChildren[0].m_v3Center.y += newSize;
+		m_pChildren[0].m_v3Center.z += newSize;
 
-	//For index 2 octant
-	m_pChildren[2].m_v3Center.x -= newSize;
-	m_pChildren[2].m_v3Center.y -= newSize;
-	m_pChildren[2].m_v3Center.z += newSize;
+		//For index 1 octant
+		m_pChildren[1].m_v3Center.x -= newSize;
+		m_pChildren[1].m_v3Center.y += newSize;
+		m_pChildren[1].m_v3Center.z += newSize;
 
-	//For index 3 octant
-	m_pChildren[3].m_v3Center.x += newSize;
-	m_pChildren[3].m_v3Center.y -= newSize;
-	m_pChildren[3].m_v3Center.z += newSize;
+		//For index 2 octant
+		m_pChildren[2].m_v3Center.x -= newSize;
+		m_pChildren[2].m_v3Center.y -= newSize;
+		m_pChildren[2].m_v3Center.z += newSize;
 
-	//For index 4 octant
-	m_pChildren[4].m_v3Center.x += newSize;
-	m_pChildren[4].m_v3Center.y += newSize;
-	m_pChildren[4].m_v3Center.z -= newSize;
+		//For index 3 octant
+		m_pChildren[3].m_v3Center.x += newSize;
+		m_pChildren[3].m_v3Center.y -= newSize;
+		m_pChildren[3].m_v3Center.z += newSize;
 
-	//For index 5 octant
-	m_pChildren[5].m_v3Center.x -= newSize;
-	m_pChildren[5].m_v3Center.y += newSize;
-	m_pChildren[5].m_v3Center.z -= newSize;
+		//For index 4 octant
+		m_pChildren[4].m_v3Center.x += newSize;
+		m_pChildren[4].m_v3Center.y += newSize;
+		m_pChildren[4].m_v3Center.z -= newSize;
 
-	//For index 6 octant
-	m_pChildren[6].m_v3Center.x -= newSize;
-	m_pChildren[6].m_v3Center.y -= newSize;
-	m_pChildren[6].m_v3Center.z -= newSize;
+		//For index 5 octant
+		m_pChildren[5].m_v3Center.x -= newSize;
+		m_pChildren[5].m_v3Center.y += newSize;
+		m_pChildren[5].m_v3Center.z -= newSize;
 
-	//For index 7 octant
-	m_pChildren[7].m_v3Center.x += newSize;
-	m_pChildren[7].m_v3Center.y -= newSize;
-	m_pChildren[7].m_v3Center.z -= newSize;
+		//For index 6 octant
+		m_pChildren[6].m_v3Center.x -= newSize;
+		m_pChildren[6].m_v3Center.y -= newSize;
+		m_pChildren[6].m_v3Center.z -= newSize;
+
+		//For index 7 octant
+		m_pChildren[7].m_v3Center.x += newSize;
+		m_pChildren[7].m_v3Center.y -= newSize;
+		m_pChildren[7].m_v3Center.z -= newSize;
+
+		for (int i = 0; i < m_uChildren; i++) {
+			m_pChildren[i].Subdivide(inOctantBOVector);
+		}
+	}
 }
+
+bool MyOctant::inOctant(MyBOClass* boClass) {
+	if (boClass->GetMaxG().x < (m_v3Center.x - (m_fSize / 2.0f))) {
+		return false;
+	}
+	if (boClass->GetMinG().x >(m_v3Center.x + (m_fSize / 2.0f))) {
+		return false;
+	}
+	if (boClass->GetMaxG().y < (m_v3Center.y - (m_fSize / 2.0f))) {
+		return false;
+	}
+	if (boClass->GetMaxG().y >(m_v3Center.y + (m_fSize / 2.0f))) {
+		return false;
+	}
+	if (boClass->GetMaxG().z < (m_v3Center.z - (m_fSize / 2.0f))) {
+		return false;
+	}
+	if (boClass->GetMaxG().z >(m_v3Center.z + (m_fSize / 2.0f))) {
+		return false;
+	}
+
+	return true;
+}
+
 void MyOctant::DestroyOctant(void)
 {
 	if (m_pChildren != nullptr)
@@ -143,4 +182,45 @@ void MyOctant::DestroyOctant(void)
 		delete[] m_pChildren;
 		m_pChildren = nullptr;
 	}
+}
+
+void MyOctant::CheckCollisions()
+{
+	if (m_uChildren > 0)
+	{
+		for (uint i = 0; i < m_uChildren; i++)
+		{
+			m_pChildren[i].CheckCollisions();
+		}
+	}
+	else
+	{
+		if (inOctantBOVector.size() == 2)
+		{
+			if (inOctantBOVector[0]->IsColliding(inOctantBOVector[1]))
+			{
+				if (displaySphere)
+				{
+					inOctantBOVector[0]->DisplaySphere(RERED);
+					inOctantBOVector[1]->DisplaySphere(RERED);
+				}
+			}
+		}
+	}
+}
+void MyOctant::ToggleDisplaySphere()
+{ 
+	displaySphere = !displaySphere;
+	if (m_uChildren > 0)
+	{
+		for (uint i = 0; i < m_uChildren; i++)
+		{
+			m_pChildren[i].ToggleDisplaySphere();
+		}
+	}	
+}
+
+bool MyOctant::GetDisplaySphere()
+{
+	return displaySphere;
 }

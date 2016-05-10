@@ -217,6 +217,10 @@ void MyBOManager::CheckCollisions(void)
 			{
 				m_llCollidingIndices[nObjectA].push_back(nObjectB);
 				m_llCollidingIndices[nObjectB].push_back(nObjectA);
+				if (displaySphere)
+				{
+					m_lObject[nObjectA]->DisplaySphere(RERED);
+				}
 			}
 		}
 	}
@@ -251,3 +255,6 @@ int MyBOManager::GetIndex(String a_sIndex)
 }
 
 uint MyBOManager::GetObjectCount(void) { return m_nObjectCount; }
+std::vector<MyBOClass*> MyBOManager::GetBOVector() { return m_lObject; }
+void MyBOManager::ToggleDisplaySphere() { displaySphere = !displaySphere; }
+bool MyBOManager::GetDisplaySphere() { return displaySphere; }

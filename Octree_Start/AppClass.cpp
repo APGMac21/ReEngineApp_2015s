@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("Sandbox"); // Window Name
+	super::InitWindow("A12_Octree"); // Window Name
 
 	// Set the clear color based on Microsoft's CornflowerBlue (default in XNA)
 	//if this line is in Init Application it will depend on the .cfg file, if it
@@ -14,6 +14,7 @@ void AppClass::InitWindow(String a_sWindowName)
 
 void AppClass::InitVariables(void)
 {
+	useSO = true;
 	//Reset the selection to -1, -1
 	m_selection = std::pair<int, int>(-1, -1);
 	//Set the camera position
@@ -23,17 +24,17 @@ void AppClass::InitVariables(void)
 		REAXISY);//What is up
 	m_pBOMngr = MyBOManager::GetInstance();
 	//Load a model onto the Mesh manager
-	for (uint i = 0; i < 10; i++)
+	for (uint i = 0; i < 300; i++)
 	{
 		String name = "Creeper" + std::to_string(i);
-		//m_pMeshMngr->LoadModel("Minecraft\\Creeper.obj", "Creeper", false, glm::translate(vector3(i)));
-		m_pMeshMngr->LoadModel("Minecraft\\Creeper.obj", name, false, 
-			glm::translate(glm::sphericalRand(10.0f)));
+		matrix4 objectMatrix = IDENTITY_M4 * glm::translate(glm::sphericalRand(10.0f));
+		//m_pMeshMngr->AddCubeToRenderList(objectMatrix, REBLUE, SOLID);
+		m_pMeshMngr->LoadModel("Minecraft\\Creeper.obj", name, false, glm::translate(glm::sphericalRand(10.0f)));
 		m_pBOMngr->AddObject(name);
 	}
 
 	m_pOctreeHead = new MyOctant();
-	//m_pOctreeHead->Subdivide();
+	m_pOctreeHead->Subdivide(m_pBOMngr->GetBOVector());
 }
 
 void AppClass::Update(void)
@@ -50,6 +51,8 @@ void AppClass::Update(void)
 
 	//Call the arcball method
 	ArcBall();
+
+	//m_pBOMngr->Update();
 	
 	//Set the model matrix for the first model to be the arcball
 	m_pMeshMngr->SetModelMatrix(ToMatrix4(m_qArcBall), 0);
@@ -57,7 +60,20 @@ void AppClass::Update(void)
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddInstanceToRenderList("ALL");
 
-	m_pOctreeHead->Draw();
+	//Check Collisions
+	if (useSO) 
+	{
+		m_pOctreeHead->CheckCollisions();
+	}
+	else
+	{
+		m_pBOMngr->Update();
+	}
+
+	if (displayOctree)
+	{
+		m_pOctreeHead->Draw();
+	}
 
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
@@ -65,12 +81,45 @@ void AppClass::Update(void)
 	//printf("FPS: %d            \r", nFPS);//print the Frames per Second
 	//Print info on the screen
 	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), REYELLOW);
-
-	m_pMeshMngr->Print("Selection: ");
-	m_pMeshMngr->PrintLine(m_pMeshMngr->GetInstanceGroupName(m_selection.first, m_selection.second), REYELLOW);
 	
 	m_pMeshMngr->Print("FPS:");
-	m_pMeshMngr->Print(std::to_string(nFPS), RERED);
+	m_pMeshMngr->PrintLine(std::to_string(nFPS), RERED);
+	m_pMeshMngr->Print("<K> Check Collisions: ");
+	if (useSO)
+	{
+		m_pMeshMngr->PrintLine("Spatial Optimization", REGREEN);
+	}
+	else
+	{
+		m_pMeshMngr->PrintLine("Brute Force", RERED);
+	}
+	m_pMeshMngr->Print("<H> Display Octree: ");
+	if (displayOctree)
+	{
+		m_pMeshMngr->PrintLine("ON", REGREEN);
+	}
+	else
+	{
+		m_pMeshMngr->PrintLine("OFF", RERED);
+	}
+	m_pMeshMngr->Print("<J> Display Collisions For SO: ");
+	if (m_pOctreeHead->GetDisplaySphere())
+	{
+		m_pMeshMngr->PrintLine("ON", REGREEN);
+	}
+	else
+	{
+		m_pMeshMngr->PrintLine("OFF", RERED);
+	}
+	m_pMeshMngr->Print("<G> Display Collisions For Brute Force: ");
+	if (m_pBOMngr->GetDisplaySphere())
+	{
+		m_pMeshMngr->PrintLine("ON", REGREEN);
+	}
+	else
+	{
+		m_pMeshMngr->PrintLine("OFF", RERED);
+	}
 }
 
 void AppClass::Display(void)

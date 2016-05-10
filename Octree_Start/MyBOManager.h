@@ -16,6 +16,7 @@ class MyBOManager
 	MeshManagerSingleton* m_pMeshMngr = nullptr;//Mesh Manager Singleton
 	std::vector<std::vector<int>> m_llCollidingIndices; //List of list of colliding indices.
 	std::map<String, uint> m_mapIndex;//Map relating the mesh and the index
+	bool displaySphere = true;
 
 public:
 	uint GetObjectCount(void);
@@ -156,6 +157,9 @@ public:
 	OUTPUT: ---
 	*/
 	void Update(void);
+	std::vector<MyBOClass*> GetBOVector();
+	void ToggleDisplaySphere();
+	bool GetDisplaySphere();
 
 private:
 	/*

@@ -6,8 +6,9 @@ void AppClass::ProcessKeyboard(void)
 
 #pragma region ON_KEY_PRESS_RELEASE
 	static bool	bLastF1 = false, bLastF2 = false, bLastF3 = false, bLastF4 = false, bLastF5 = false,
-				bLastF6 = false, bLastF7 = false, bLastF8 = false, bLastF9 = false, bLastF10 = false,
-				bLastEscape = false, bLastF = false;
+		bLastF6 = false, bLastF7 = false, bLastF8 = false, bLastF9 = false, bLastF10 = false,
+		bLastEscape = false, bLastF = false, bLastK = false, bLastH = false, bLastJ = false,
+		bLastG = false;
 #define ON_KEY_PRESS_RELEASE(key, pressed_action, released_action){  \
 			bool pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::key);			\
 			if(pressed){											\
@@ -49,6 +50,10 @@ void AppClass::ProcessKeyboard(void)
 	ON_KEY_PRESS_RELEASE(F2, NULL, m_pCameraMngr->SetCameraMode(CAMROTHOZ));
 	ON_KEY_PRESS_RELEASE(F3, NULL, m_pCameraMngr->SetCameraMode(CAMROTHOY));
 	ON_KEY_PRESS_RELEASE(F4, NULL, m_pCameraMngr->SetCameraMode(CAMROTHOX));
+	ON_KEY_PRESS_RELEASE(K, NULL, useSO = !useSO);
+	ON_KEY_PRESS_RELEASE(H, NULL, displayOctree = !displayOctree);
+	ON_KEY_PRESS_RELEASE(J, NULL, m_pOctreeHead->ToggleDisplaySphere());
+	ON_KEY_PRESS_RELEASE(G, NULL, m_pBOMngr->ToggleDisplaySphere());
 	static bool bFPSControll = false;
 	ON_KEY_PRESS_RELEASE(F, bFPSControll = !bFPSControll, m_pCameraMngr->SetFPS(bFPSControll));
 #pragma endregion

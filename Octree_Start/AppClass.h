@@ -17,6 +17,8 @@ class AppClass : public ReEngAppClass
 	MyBOManager* m_pBOMngr = nullptr;
 public:
 	typedef ReEngAppClass super;
+	bool useSO = true;
+	bool displayOctree = false;
 
 	/*
 	USAGE: Constructor

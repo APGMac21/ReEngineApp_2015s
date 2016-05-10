@@ -19,6 +19,8 @@ class MyOctant
 	uint m_uChildren = 0;
 	bool m_bHead = true;
 	MyBOManager* m_pBOMngr = nullptr;
+	std::vector<MyBOClass*> inOctantBOVector;
+	bool displaySphere = true;
 	
 public:
 
@@ -64,8 +66,12 @@ public:
 	void Swap(MyOctant& other);
 
 	void Draw(void);
-	void Subdivide(void);
+	void Subdivide(std::vector<MyBOClass*> bOVector);
 	void DestroyOctant(void);
+	bool inOctant(MyBOClass* boClass);
+	void CheckCollisions();
+	bool GetDisplaySphere();
+	void ToggleDisplaySphere();
 private:
 	/*
 	Method: Release
